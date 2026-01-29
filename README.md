@@ -1,72 +1,82 @@
-# FarBase Coin Creator
+# FarBaseCoinCreator
 
-A production-grade Base + Farcaster Mini App for creating, analyzing, and swapping coins on Base Mainnet.
+A production-grade Farcaster Mini App on Base Mainnet for creating, swapping, and analyzing coins.
 
-## 🚀 Deployment Instructions (Vercel)
-
-This project is designed to be deployed on **Vercel** with zero configuration, provided you set the environment variables correctly.
-
-### 1. Prerequisites
-
-- A [Vercel](https://vercel.com) account.
-- A [GitHub](https://github.com) account.
-- A [Supabase](https://supabase.com) project.
-- A [Thirdweb](https://thirdweb.com) Client ID.
-- A [Neynar](https://neynar.com) API Key.
-- A [Coinbase CDP](https://portal.cdp.coinbase.com/) API Key.
-
-### 2. Environment Variables
-
-Go to your Vercel Project Settings > Environment Variables and add the following:
-
-**Public Variables:**
-- `NEXT_PUBLIC_BASE_RPC_URL`: `https://white-summer-daylight.base-mainnet.quiknode.pro/c70e9f7d028fa61b8a730fb47979326aa4c23539`
-- `NEXT_PUBLIC_BASE_WSS_URL`: `wss://white-summer-daylight.base-mainnet.quiknode.pro/c70e9f7d028fa61b8a730fb47979326aa4c23539`
-- `NEXT_PUBLIC_ZORA_API_KEY`: Your Zora API Key
-- `NEXT_PUBLIC_PLATFORM_WALLET`: Your Platform Wallet Address (for fees/admin)
-- `NEXT_PUBLIC_THIRDWEB_CLIENT_ID`: Your Thirdweb Client ID
-
-**Private Variables (Server-side):**
-- `SUPABASE_URL`: Your Supabase Project URL
-- `SUPABASE_ANON_KEY`: Your Supabase Anon Key
-- `SUPABASE_SERVICE_ROLE_KEY`: Your Supabase Service Role Key
-- `NEYNAR_API_KEY`: Your Neynar API Key
-- `NEYNAR_CLIENT_ID`: Your Neynar Client ID
-- `NEYNAR_SNAPCHAIN_URL`: Neynar Snapchain URL
-- `CDP_API_KEY_ID`: Coinbase CDP API Key ID
-- `CDP_API_SECRET`: Coinbase CDP API Secret
-- `THIRDWEB_SECRET_KEY`: Thirdweb Secret Key
-- `MOLTBOT_API_KEY_1`: Your MoltBot API Key
-- `AI_DAILY_LIMIT`: `500`
-
-### 3. Database Setup (Supabase)
-
-1. Go to your Supabase Dashboard > SQL Editor.
-2. Copy the content of `supabase_schema.sql` from this repository.
-3. Run the SQL query to create tables and set up RLS policies.
-
-### 4. Deploy
-
-1. Push this repository to GitHub.
-2. Import the project in Vercel.
-3. Configure the environment variables.
-4. Click **Deploy**.
-
-## 🛠 Features
+## Features
 
 - **Base Mainnet Only**: Strict enforcement of Chain ID 8453.
-- **User-Signed Transactions**: No backend wallet signing; users own their keys.
-- **Farcaster Integration**: Frame v2 compatibility via `.well-known/farcaster.json`.
-- **MoltBot AI**: Floating AI assistant for analysis and help.
-- **Supabase**: RLS-enabled database for users, coins, and boosts.
-- **OpenOcean Swap**: Integrated DEX aggregator.
+- **User-Signed Transactions**: No backend wallet signing; all actions are user-confirmed.
+- **Create Coins**: Deploy standard ERC20 tokens via Thirdweb (RPC only).
+- **Swap**: Integrated OpenOcean V4 aggregation for best rates.
+- **AI Assistant**: MoltBot AI for token analysis and command routing.
+- **Farcaster Integration**: Frame compatibility and Neynar Snapchain support.
+- **Leaderboard & Profile**: Track top creators and user stats via Supabase.
 
-## ⚠️ Security
+## Tech Stack
 
-- `.env` files are gitignored.
-- No private keys are stored in the code.
-- All sensitive operations are protected by RLS or server-side checks.
+- **Framework**: Next.js 14 (App Router)
+- **Language**: TypeScript (Strict)
+- **Styling**: Tailwind CSS
+- **Database**: Supabase (PostgreSQL + RLS)
+- **Blockchain SDK**: thirdweb (RPC only) + viem/wagmi
+- **AI**: MoltBot + Coinbase CDP Agent Kit
+- **DEX Aggregation**: OpenOcean V4 via QuickNode
 
-## 📜 License
+## Setup & Deployment
 
-MIT
+### 1. Environment Variables
+
+Copy `.env.example` to `.env` and fill in the required keys.
+
+```bash
+cp .env.example .env
+```
+
+**Required Keys:**
+- `NEXT_PUBLIC_BASE_RPC_URL`: QuickNode HTTP RPC URL
+- `NEXT_PUBLIC_BASE_WSS_URL`: QuickNode WSS URL
+- `NEXT_PUBLIC_THIRDWEB_CLIENT_ID`: Thirdweb Client ID
+- `SUPABASE_URL`: Supabase Project URL
+- `SUPABASE_ANON_KEY`: Supabase Anon Key
+- `SUPABASE_SERVICE_ROLE_KEY`: Supabase Service Role Key (Server only)
+- `NEYNAR_API_KEY`: Neynar API Key
+- `CDP_API_KEY_ID`: Coinbase CDP API Key ID
+- `CDP_API_SECRET`: Coinbase CDP Secret
+- `MOLTBOT_API_KEY_1`: MoltBot API Key
+
+### 2. Install Dependencies
+
+```bash
+npm install
+```
+
+### 3. Run Development Server
+
+```bash
+npm run dev
+```
+
+### 4. Build for Production
+
+```bash
+npm run build
+```
+
+### 5. Vercel Deployment
+
+1. Create a new project on Vercel.
+2. Import this repository.
+3. Configure **Environment Variables** in Vercel settings (copy all from `.env`).
+4. Set the **Framework Preset** to Next.js.
+5. Deploy.
+6. Assign a custom domain (HTTPS enforced).
+
+## Repository Rules
+
+- **No Secrets**: Never commit `.env`. Use `.env.example`.
+- **Mainnet Only**: Do not add testnet configurations.
+- **User-Signed**: Do not add private key signing logic to backend.
+
+## License
+
+Private Repository. All rights reserved.

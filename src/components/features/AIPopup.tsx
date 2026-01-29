@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { MessageCircle, X, Send, Sparkles } from "lucide-react";
 import { useActiveAccount } from "thirdweb/react";
-import { parseCommand, processIntent } from "@/lib/ai/commandParser";
+import { processAICommandAction } from "@/app/actions";
 
 export default function AIPopup() {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,15 +31,12 @@ export default function AIPopup() {
     setInput("");
     setIsTyping(true);
 
-    // Process Intent
+    // Process Intent via Server Action
     try {
-        const parsed = parseCommand(userMsg);
-        const response = await processIntent(parsed);
+        const response = await processAICommandAction(userMsg);
         
-        setTimeout(() => {
-            setMessages(prev => [...prev, { role: 'ai', content: response }]);
-            setIsTyping(false);
-        }, 800);
+        setMessages(prev => [...prev, { role: 'ai', content: response }]);
+        setIsTyping(false);
     } catch (e) {
         setIsTyping(false);
         setMessages(prev => [...prev, { role: 'ai', content: "Sorry, I encountered an error processing your request." }]);

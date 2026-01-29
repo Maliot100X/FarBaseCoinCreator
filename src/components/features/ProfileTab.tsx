@@ -1,27 +1,67 @@
 "use client";
+
 import { useActiveAccount } from "thirdweb/react";
-import { ConnectButton } from "thirdweb/react";
-import { client } from "@/lib/thirdweb";
+import { User, Wallet, Award, Clock } from "lucide-react";
 
 export default function ProfileTab() {
   const account = useActiveAccount();
 
-  return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">Profile</h2>
-      <div className="bg-gray-800 p-6 rounded-lg border border-gray-700 space-y-4">
-        <div className="flex items-center justify-between">
-            <span className="text-gray-400">Wallet Status</span>
-            <ConnectButton client={client} />
+  if (!account) {
+    return (
+      <div className="text-center py-12">
+        <div className="inline-flex p-4 rounded-full bg-zinc-800 mb-4">
+          <Wallet className="w-8 h-8 text-zinc-400" />
         </div>
-        
-        {account && (
-            <div className="pt-4 border-t border-gray-700">
-                <h3 className="font-bold mb-2">Your Coins</h3>
-                <p className="text-gray-500 text-sm">You haven't created any coins yet.</p>
+        <h3 className="text-xl font-bold mb-2">Connect Wallet</h3>
+        <p className="text-zinc-500">Please connect your wallet to view your profile.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="p-6 bg-zinc-900 border border-zinc-800 rounded-xl flex items-center gap-6">
+        <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center">
+            <User className="w-10 h-10 text-white" />
+        </div>
+        <div>
+            <h2 className="text-2xl font-bold">User {account.address.slice(0, 6)}...</h2>
+            <div className="text-zinc-400 text-sm font-mono">{account.address}</div>
+            <div className="flex gap-2 mt-2">
+                <span className="px-2 py-1 bg-blue-500/10 text-blue-500 text-xs rounded-md border border-blue-500/20">Pro Member</span>
+                <span className="px-2 py-1 bg-green-500/10 text-green-500 text-xs rounded-md border border-green-500/20">Early Adopter</span>
             </div>
-        )}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="p-4 bg-zinc-900 border border-zinc-800 rounded-xl">
+              <div className="flex items-center gap-2 text-zinc-400 mb-2">
+                  <Award className="w-4 h-4" />
+                  <span className="text-sm">Coins Created</span>
+              </div>
+              <div className="text-2xl font-bold">3</div>
+          </div>
+          <div className="p-4 bg-zinc-900 border border-zinc-800 rounded-xl">
+              <div className="flex items-center gap-2 text-zinc-400 mb-2">
+                  <Clock className="w-4 h-4" />
+                  <span className="text-sm">Days Active</span>
+              </div>
+              <div className="text-2xl font-bold">12</div>
+          </div>
+          <div className="p-4 bg-zinc-900 border border-zinc-800 rounded-xl">
+              <div className="flex items-center gap-2 text-zinc-400 mb-2">
+                  <User className="w-4 h-4" />
+                  <span className="text-sm">Followers</span>
+              </div>
+              <div className="text-2xl font-bold">1.2k</div>
+          </div>
+      </div>
+
+      <h3 className="text-xl font-bold mt-8 mb-4">Your Coins</h3>
+      <div className="p-8 text-center bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-500">
+          You haven't launched any coins yet.
       </div>
     </div>
-  )
+  );
 }
