@@ -1,10 +1,24 @@
 "use client";
 
 import { useActiveAccount } from "thirdweb/react";
-import { User, Wallet, Award, Clock } from "lucide-react";
+import { User, Wallet, Award, Clock, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { fetchUserProfile } from "@/app/actions";
 
 export default function ProfileTab() {
   const account = useActiveAccount();
+  const [profile, setProfile] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (account?.address) {
+        setLoading(true);
+        fetchUserProfile(account.address)
+            .then(data => setProfile(data))
+            .catch(console.error)
+            .finally(() => setLoading(false));
+    }
+  }, [account?.address]);
 
   if (!account) {
     return (
@@ -16,6 +30,10 @@ export default function ProfileTab() {
         <p className="text-zinc-500">Please connect your wallet to view your profile.</p>
       </div>
     );
+  }
+
+  if (loading) {
+      return <div className="flex justify-center py-20"><Loader2 className="animate-spin w-8 h-8 text-blue-500" /></div>;
   }
 
   return (
@@ -40,27 +58,29 @@ export default function ProfileTab() {
                   <Award className="w-4 h-4" />
                   <span className="text-sm">Coins Created</span>
               </div>
-              <div className="text-2xl font-bold">3</div>
+              <div className="text-2xl font-bold">{profile?.stats?.coinsCreated || 0}</div>
           </div>
           <div className="p-4 bg-zinc-900 border border-zinc-800 rounded-xl">
               <div className="flex items-center gap-2 text-zinc-400 mb-2">
                   <Clock className="w-4 h-4" />
                   <span className="text-sm">Days Active</span>
               </div>
-              <div className="text-2xl font-bold">12</div>
+              <div className="text-2xl font-bold">{profile?.stats?.daysActive || 0}</div>
           </div>
           <div className="p-4 bg-zinc-900 border border-zinc-800 rounded-xl">
               <div className="flex items-center gap-2 text-zinc-400 mb-2">
                   <User className="w-4 h-4" />
                   <span className="text-sm">Followers</span>
               </div>
-              <div className="text-2xl font-bold">1.2k</div>
+              <div className="text-2xl font-bold">{profile?.stats?.followers || 0}</div>
           </div>
       </div>
 
       <h3 className="text-xl font-bold mt-8 mb-4">Your Coins</h3>
       <div className="p-8 text-center bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-500">
-          You haven't launched any coins yet.
+          {profile?.stats?.coinsCreated > 0 
+            ? "Your coins will appear here." 
+            : "You haven't launched any coins yet."}
       </div>
     </div>
   );

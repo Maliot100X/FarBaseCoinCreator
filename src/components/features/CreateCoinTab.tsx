@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useDeployToken } from "@/hooks/useDeployToken";
 import { Loader2, Rocket, AlertTriangle, CheckCircle2 } from "lucide-react";
 import { useActiveAccount } from "thirdweb/react";
+import { saveCoin } from "@/app/actions";
 
 export default function CreateCoinTab() {
   const { deploy } = useDeployToken();
@@ -26,7 +27,16 @@ export default function CreateCoinTab() {
     try {
       const address = await deploy(name, symbol, supply);
       setSuccess(address);
-      // In a real app, you'd also save this to Supabase here
+      
+      // Save to Supabase
+      await saveCoin({
+          name,
+          symbol,
+          supply,
+          address,
+          creator: account.address
+      });
+
     } catch (err: any) {
       console.error(err);
       setError(err.message || "Deployment failed");

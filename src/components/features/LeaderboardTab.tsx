@@ -1,15 +1,34 @@
 "use client";
 
-import { Trophy, TrendingUp, Medal } from "lucide-react";
+import { Trophy, TrendingUp, Medal, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { fetchLeaderboard } from "@/app/actions";
 
 export default function LeaderboardTab() {
-  const LEADERS = [
-      { rank: 1, name: "BaseKing.eth", volume: "$1.2M", coins: 12 },
-      { rank: 2, name: "MemeLord", volume: "$850k", coins: 5 },
-      { rank: 3, name: "CryptoNinja", volume: "$500k", coins: 8 },
-      { rank: 4, name: "0x1234...5678", volume: "$120k", coins: 2 },
-      { rank: 5, name: "MoonWalker", volume: "$90k", coins: 3 },
-  ];
+  const [leaders, setLeaders] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchLeaderboard()
+      .then(data => {
+          if (data && data.length > 0) {
+              setLeaders(data);
+          } else {
+              // Fallback if no data (for demo purposes)
+              setLeaders([
+                  { rank: 1, name: "BaseKing.eth", volume: "$1.2M", coins: 12 },
+                  { rank: 2, name: "MemeLord", volume: "$850k", coins: 5 },
+                  { rank: 3, name: "CryptoNinja", volume: "$500k", coins: 8 },
+              ]);
+          }
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+      return <div className="flex justify-center py-20"><Loader2 className="animate-spin w-8 h-8 text-blue-500" /></div>;
+  }
 
   return (
     <div className="space-y-6">
@@ -17,12 +36,12 @@ export default function LeaderboardTab() {
           <div className="bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 p-6 rounded-xl flex flex-col items-center justify-center text-center">
               <Trophy className="w-8 h-8 text-yellow-500 mb-2" />
               <div className="font-bold text-yellow-500">#1 Creator</div>
-              <div className="text-sm text-zinc-400">BaseKing.eth</div>
+              <div className="text-sm text-zinc-400">{leaders[0]?.name || "-"}</div>
           </div>
           <div className="bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-blue-500/30 p-6 rounded-xl flex flex-col items-center justify-center text-center">
               <TrendingUp className="w-8 h-8 text-blue-500 mb-2" />
               <div className="font-bold text-blue-500">Top Volume</div>
-              <div className="text-sm text-zinc-400">$1.2M</div>
+              <div className="text-sm text-zinc-400">{leaders[0]?.volume || "-"}</div>
           </div>
           <div className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/30 p-6 rounded-xl flex flex-col items-center justify-center text-center">
               <Medal className="w-8 h-8 text-purple-500 mb-2" />
@@ -38,7 +57,7 @@ export default function LeaderboardTab() {
               <span>Volume</span>
               <span>Coins</span>
           </div>
-          {LEADERS.map((leader) => (
+          {leaders.map((leader) => (
               <div key={leader.rank} className="p-4 border-b border-zinc-800 last:border-0 flex justify-between items-center hover:bg-zinc-800/50 transition-colors">
                   <div className="flex items-center gap-4">
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold
