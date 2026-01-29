@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Header from "@/components/layout/Header";
 import Navigation from "@/components/layout/Navigation";
 import HomeTab from "@/components/features/HomeTab";
 import CreateCoinTab from "@/components/features/CreateCoinTab";
@@ -34,9 +35,13 @@ export default function Home() {
 
   return (
     <main className="min-h-screen pb-20 bg-black text-white">
-      {renderContent()}
+      <Header />
+      <div className="max-w-7xl mx-auto px-4 py-6">
+        {renderContent()}
+      </div>
       <AIPopup />
       <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
     </main>
   );
 }
+
